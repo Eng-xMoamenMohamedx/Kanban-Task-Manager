@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban Board | Task Manager</title>
+
+    <link rel="shortcut icon" href="./favicon/fav.png" type="image/x-icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/all.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <section>
+            <nav class="navbar fixed-top bg-body-tertiary nav-bg">
+                <div class="container-fluid container-lg p-0">
+                    <h1 class="logo-st m-0"><i class="fa-solid fa-table-columns icon-st"></i> Kanban</h1>
+                    <button id="addBtn" title="Create Task"
+                        class="btn add-btn d-flex justify-content-center align-items-center">
+                        <i style="color: white;" class="fa-solid fa-plus "></i>
+                    </button>
+                </div>
+            </nav>
+        </section>
+    </header>
+
+    <div id="modalContainer" class="task-ovarlay " style="display: none;">
+        <div class="container p-0">
+            <div class="row justify-content-center align-items-center g-0">
+                <div class="col-12 col-md-12 col-lg-5">
+                    <div class="task-modal">
+
+                        <div class="modal-header">
+                            <h2 id="titleModal" class="mb-0">Create New Task</h2>
+                            <div id="closeBtn" class="close-icon"><i class="fa-solid fa-x fa-xs"></i></div>
+                        </div>
+
+                        <form class="form-container">
+                            <div class="mb-3">
+                                <label for="title" class="mb-2">
+                                    <i style="color: #90a1b9;" class="fa-solid fa-heading"></i>
+                                    Task Title
+                                    <span class="ms-1" style="color: red; font-size: 14px;">*</span>
+                                </label>
+                                <input class="form-control position-relative" id="title" type="text"
+                                    placeholder="What needs to be done ?" required>
+                                <span id="titleError" class="error-msg position-absolute d-none">Task title is
+                                    required</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="level" class="mb-2">
+                                    <i style="color: #90a1b9;" class="fa-solid fa-flag"></i>
+                                    Priority
+                                </label>
+                                <select id="level" class="form-select">
+                                    <option>Low</option>
+                                    <option>Medium</option>
+                                    <option>High</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="date" class="mb-2">
+                                    <i style="color: #90a1b9;" class="fa-solid fa-calendar"></i>
+                                    Due Date
+                                </label>
+                                <input class="form-control position-relative" id="date" type="date"
+                                    placeholder="What needs to be done ?">
+                                <span id="errorMsg" class="error-msg position-absolute  d-none">Due date cannot be in
+                                    the past</span>
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label for="description" class="mb-2">
+                                    <i style="color: #90a1b9;" class="fa-solid fa-align-left"></i>
+                                    Description
+                                </label>
+                                <textarea class="form-control" maxlength="500" id="description"
+                                    placeholder="Add more details about this task..."></textarea>
+                                <p id="count" class="mb-0 text-end text-count mt-2">0/500</p>
+                            </div>
+
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <button id="cancelBtn" class="btn cancel-btn flex-fill" type="reset">Cancel</button>
+                                <button id="submitBtn" type="button" class="btn add-modal-btn flex-fill "><i
+                                        class="fa-solid fa-plus"></i> Add Task</button>
+                                <button id="saveBtn" type="button" class="btn add-modal-btn flex-fill d-none"><i
+                                        class="fa-solid fa-save "></i> Save Changes</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <main class="main-p mb-5 mt-5 pt-5">
+        <section>
+            <div class=" container-fluid">
+                <div class="row gap-4 justify-content-between">
+                    <div class="col-12 col-md-3 g-0 flex-fill">
+                        <div>
+                            <div class="tasks-card">
+                                <div class="card-title mb-4 ">
+                                    <div class="card-icon">
+                                        <i style="color: #62748e;" class="fa-solid fa-clipboard-list"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="m-0 fw-semibold">To Do</h2>
+                                        <p id="totalTasks" class="m-0">0 tasks</p>
+                                    </div>
+                                </div>
+
+                                <div id="parentContainer" aria-name="todo">
+                              
+
+                                    
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-3 g-0 flex-fill">
+                        <div>
+                            <div class="tasks-card">
+                                <div class="card-title mb-4">
+                                    <div style="background-color: #fffbeb;" class="card-icon">
+                                        <i style="color: #fe9a00;" class="fa-solid fa-spinner"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="m-0 fw-semibold">In Progress</h2>
+                                        <p id="progressTasks" class="m-0">0 tasks</p>
+                                    </div>
+                                </div>
+<!-- 
+                                <div class="card-body d-flex justify-content-center align-items-center flex-column">
+                                    <i style="color: #90a1b9;" class="fa-solid fa-folder-open fa-3x opacity-50"></i>
+                                    <p class="m-0 mt-2 st-inner1">No tasks yet</p>
+                                    <p class="m-0 st-inner2">Click + to add one</p>
+                                </div> -->
+
+                                <div id="progressContainer" aria-name="in-progress">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-3 g-0 flex-fill">
+                        <div>
+                            <div class="tasks-card">
+                                <div class="card-title mb-4">
+                                    <div style="background-color: #ecfdf5;" class="card-icon">
+                                        <i style="color: #00bc7d;" class="fa-solid fa-circle-check"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="m-0 fw-semibold">Completed</h2>
+                                        <p id="completedTasks" class="m-0">0 tasks</p>
+                                    </div>
+                                </div>
+
+                                <!-- <div class="card-body d-flex justify-content-center align-items-center flex-column">
+                                    <i style="color: #90a1b9;" class="fa-solid fa-folder-open fa-3x opacity-50"></i>
+                                    <p class="m-0 mt-2 st-inner1">No tasks yet</p>
+                                    <p class="m-0 st-inner2">Click + to add one</p>
+                                </div> -->
+
+                                <div id="completedContainer" aria-name="completed"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+
+    <footer class="p-footer footer-bg">
+        <div class="d-flex justify-content-center">
+            <p class="text-white m-0">Made with <i style="color: #ff2056;" class="fa-solid fa-heart"></i> by Moamen Mohamed</p>
+        </div>
+    </footer>
+    <script type="module" src="./dist/main.js"></script>
+</body>
+
+</html>
